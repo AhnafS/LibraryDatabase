@@ -1,0 +1,15 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": {
+    "include": [
+      "lib/**/*.jar",
+      "/Users/ahnafs/Downloads/sqlite-jdbc-3.21.0.1.jar"
+    ],
+    "exclude": [
+      "lib/sqlite-jdbc-3.44.1.0.jar",
+      "lib/mysql-connector-j-8.2.0.jar"
+    ]
+  },
+  "java.dependency.packagePresentation": "hierarchical"
+}
