@@ -53,6 +53,8 @@ public class Main {
             libraryTransactionUtils.getAllLibraryTransactions();
             System.out.println("\n");
             libraryTransactionUtils.deleteLibraryTransaction("1234567890123", 1, 1);
+            System.out.println("\n");
+            System.out.println(libraryTransactionUtils.getOverdueStudentNames());
 
         } catch (Exception e) {
             System.out.println(e);

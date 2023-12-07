@@ -3,6 +3,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LibraryTransactionUtils {
     private static final String DATABASE_URL = "jdbc:sqlite:src/db/LibraryDatabase.db";
@@ -107,5 +110,34 @@ public class LibraryTransactionUtils {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<String> getOverdueStudentNames() {
+        List<String> overdueStudentNames = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            // Prepare SQL statement for retrieval
+            String sql = "SELECT Person.Name, LibraryTransaction.ReturnDate " +
+                    "FROM Person " +
+                    "JOIN LibraryTransaction ON Person.PersonID = LibraryTransaction.LibraryID " +
+                    "WHERE Person.Title = 'Student' AND LibraryTransaction.ReturnDate < ? or LibraryTransaction.ReturnDate= null ";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                // Set parameter for current date
+                preparedStatement.setString(1, LocalDate.now().toString());
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        // Add the name to the list
+                        String studentName = resultSet.getString("Name");
+                        overdueStudentNames.add(studentName);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return overdueStudentNames;
     }
 }
