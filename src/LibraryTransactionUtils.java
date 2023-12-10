@@ -58,25 +58,44 @@ public class LibraryTransactionUtils {
      * @param penalty                Penalty associated with the transaction.
      * @param libraryStaffTransactee Library staff involved in the transaction.
      */
+    private static boolean libraryTransactionExists(Connection connection, String isbn, int libraryID, int copyNumber)
+            throws SQLException {
+        String query = "SELECT 1 FROM LibraryTransaction WHERE ISBN = ? AND LibraryID = ? AND CopyNumber = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, isbn);
+            preparedStatement.setInt(2, libraryID);
+            preparedStatement.setInt(3, copyNumber);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next(); // Returns true if a record is found
+            }
+        }
+    }
+
     public static void insertLibraryTransaction(String isbn, int libraryID, int copyNumber, String personTitle,
             String borrowDate, String returnDate, int penalty, String libraryStaffTransactee) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
-            // Prepare SQL statement for insertion
-            String sql = "INSERT INTO LibraryTransaction (ISBN, LibraryID, CopyNumber, PersonTitle, " +
-                    "BorrowDate, ReturnDate, Penalty, LibraryStaffTransactee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                // Set parameters and execute the statement
-                preparedStatement.setString(1, isbn);
-                preparedStatement.setInt(2, libraryID);
-                preparedStatement.setInt(3, copyNumber);
-                preparedStatement.setString(4, personTitle);
-                preparedStatement.setString(5, borrowDate);
-                preparedStatement.setString(6, returnDate);
-                preparedStatement.setInt(7, penalty);
-                preparedStatement.setString(8, libraryStaffTransactee);
+            // Check if the record already exists
+            if (!libraryTransactionExists(connection, isbn, libraryID, copyNumber)) {
+                // Prepare SQL statement for insertion
+                String sql = "INSERT INTO LibraryTransaction (ISBN, LibraryID, CopyNumber, PersonTitle, " +
+                        "BorrowDate, ReturnDate, Penalty, LibraryStaffTransactee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                    // Set parameters and execute the statement
+                    preparedStatement.setString(1, isbn);
+                    preparedStatement.setInt(2, libraryID);
+                    preparedStatement.setInt(3, copyNumber);
+                    preparedStatement.setString(4, personTitle);
+                    preparedStatement.setString(5, borrowDate);
+                    preparedStatement.setString(6, returnDate);
+                    preparedStatement.setInt(7, penalty);
+                    preparedStatement.setString(8, libraryStaffTransactee);
 
-                preparedStatement.executeUpdate();
-                System.out.println("LibraryTransaction inserted successfully!");
+                    preparedStatement.executeUpdate();
+                    System.out.println("LibraryTransaction inserted successfully!");
+                }
+            } else {
+                System.out.println("LibraryTransaction with the same ISBN, LibraryID, and CopyNumber already exists.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
