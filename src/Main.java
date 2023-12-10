@@ -34,6 +34,10 @@ public class Main {
             personUtils.deletePerson(11);
             System.out.println("\n");
             personUtils.getAllPersons();
+            System.out.println("\n Print student Names");
+            personUtils.printStudentNames();
+            System.out.println("\n Print professor Names");
+            personUtils.printProfessorNames();
 
             // LibraryCard Methods
             LibraryCardUtils libraryCardUtils = new LibraryCardUtils();

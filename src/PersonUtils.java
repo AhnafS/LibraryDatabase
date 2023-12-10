@@ -3,6 +3,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PersonUtils {
     private static final String DATABASE_URL = "jdbc:sqlite:src/db/LibraryDatabase.db";
@@ -113,6 +115,39 @@ public class PersonUtils {
             try (var resultSet = checkLibraryCardStatement.executeQuery()) {
                 return resultSet.next();
             }
+        }
+    }
+
+    public static void printStudentNames() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String sql = "SELECT Name FROM Person WHERE Title = 'Student'";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                    ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String studentName = resultSet.getString("Name");
+                    System.out.println("Student Name: " + studentName);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Print the names of all professors from the Person table.
+     */
+    public static void printProfessorNames() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String sql = "SELECT Name FROM Person WHERE Title = 'Professor'";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                    ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String professorName = resultSet.getString("Name");
+                    System.out.println("Professor Name: " + professorName);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
