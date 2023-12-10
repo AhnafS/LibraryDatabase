@@ -52,9 +52,26 @@ public class Main {
             System.out.println("\n");
             libraryTransactionUtils.getAllLibraryTransactions();
             System.out.println("\n");
-            libraryTransactionUtils.deleteLibraryTransaction("1234567890123", 1, 1);
-            System.out.println("\n");
             System.out.println(libraryTransactionUtils.getOverdueStudentNames());
+            System.out.println("\n");
+            libraryTransactionUtils.deleteLibraryTransaction("1234567890123", 1, 1);
+            try {
+                libraryTransactionUtils.insertLibraryTransaction("1234567890123", 1, 1, "Student",
+                        "2023-01-01", "2023-01-15", 0, "John Doe");
+
+                // Display all library transactions (including outstanding balances)
+                libraryTransactionUtils.getAllLibraryTransactions();
+
+                // Update outstanding balance for a specific transaction
+                libraryTransactionUtils.calculateOutstandingBalance("1234567890123", 1, 1, 25.0);
+
+                // Display all library transactions again (including updated outstanding
+                // balances)
+                libraryTransactionUtils.getAllLibraryTransactions();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } catch (Exception e) {
             System.out.println(e);

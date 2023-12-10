@@ -79,4 +79,26 @@ public class CopyUtils {
         }
     }
 
+    public static void getRemainingCopies(String isbn) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement("SELECT * FROM Copy WHERE ISBN = ? AND IsBorrowed = 0")) {
+
+            preparedStatement.setString(1, isbn);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                // Process each row in the result set
+                while (resultSet.next()) {
+                    int copyNumber = resultSet.getInt("CopyNumber");
+                    System.out.println("ISBN: " + isbn + ", CopyNumber: " + copyNumber);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -117,10 +117,12 @@ public class LibraryTransactionUtils {
 
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
             // Prepare SQL statement for retrieval
-            String sql = "SELECT Person.Name, LibraryTransaction.ReturnDate " +
-                    "FROM Person " +
-                    "JOIN LibraryTransaction ON Person.PersonID = LibraryTransaction.LibraryID " +
-                    "WHERE Person.Title = 'Student' AND LibraryTransaction.ReturnDate < ? or LibraryTransaction.ReturnDate= null ";
+            String sql = "SELECT Person.Name, LibraryTransaction.ReturnDate\n" + //
+                    "FROM Person\n" + //
+                    "JOIN LibraryTransaction ON Person.PersonID = LibraryTransaction.LibraryID\n" + //
+                    "WHERE Person.Title = 'Student' AND (LibraryTransaction.ReturnDate < ? OR LibraryTransaction.ReturnDate IS NULL);\n"
+                    + //
+                    "";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 // Set parameter for current date
@@ -139,5 +141,33 @@ public class LibraryTransactionUtils {
         }
 
         return overdueStudentNames;
+    }
+
+    public static double calculateOutstandingBalance(String isbn, int libraryID, int copyNumber, double newBalance) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            // Retrieve the existing penalty for the given library transaction
+            String sql = "SELECT Penalty FROM LibraryTransaction " +
+                    "WHERE ISBN = ? AND LibraryID = ? AND CopyNumber = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, isbn);
+                preparedStatement.setInt(2, libraryID);
+                preparedStatement.setInt(3, copyNumber);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        double existingPenalty = resultSet.getDouble("Penalty");
+
+                        // Calculate the outstanding balance by adding the existing penalty to the new
+                        // balance
+                        return existingPenalty + newBalance;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Return 0.0 if an error occurs or no result is found
+        return 0.0;
     }
 }
