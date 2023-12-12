@@ -161,6 +161,27 @@ public class LibraryTransactionUtils {
 
         return overdueStudentNames;
     }
+  public static void whoBorrowedCSBooks() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String sql = "SELECT * FROM Person " +
+                    "INNER JOIN LibraryTransaction ON Person.PersonID = LibraryTransaction.LibraryID " +
+                    "INNER JOIN Book ON LibraryTransaction.ISBN = Book.ISBN AND Book.SubjectField='Computer Science' ";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    int personID = resultSet.getInt("PersonID");
+                    String name = resultSet.getString("Name");
+                    String title = resultSet.getString("Title");
+                    System.out.println("ID:"+personID+ ", name:"+ name+ ", Title:"+ title);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }   
+    
 
     public static double calculateOutstandingBalance(String isbn, int libraryID, int copyNumber, double newBalance) {
         try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
