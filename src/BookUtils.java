@@ -95,5 +95,41 @@ public class BookUtils {
             e.printStackTrace();
         }
     }
+public static void csBooks() {
+     try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+         String sql = "SELECT ISBN, Author, Title, Language FROM Book WHERE SubjectField = 'Computer Science'";
+         try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+              ResultSet resultSet = preparedStatement.executeQuery()) {
+             while (resultSet.next()) {
+                 String isbn = resultSet.getString("ISBN");
+                 String author = resultSet.getString("Author");
+                 String title = resultSet.getString("Title");
+                 String language= resultSet.getString("language");
+                 System.out.println("ISBN "+isbn +" Author: "+ author+" Title "+title+" Language "+ language);
+             }
+         }
+     } catch (SQLException e) {
+         e.printStackTrace();
+      }
+     }
+    public static void foreignLanguageBook() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            // Assuming 'Language' is the column representing the language in the database
+            String sql = "SELECT ISBN, Author, Title, Language FROM Book WHERE Language <> 'English'";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
 
+                while (resultSet.next()) {
+                    String isbn = resultSet.getString("ISBN");
+                    String author = resultSet.getString("Author");
+                    String title = resultSet.getString("Title");
+                    String language= resultSet.getString("language");
+
+                    System.out.print("ISBN " + isbn + ", Author " + author + ", Title " + title+ ", Language "+ language);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
