@@ -80,6 +80,11 @@ public class Main {
                 // Display all library transactions after returning the book
                 System.out.println("\nAfter returning the book:");
                 libraryTransactionUtils.getAllLibraryTransactions();
+                System.out.println();
+                System.out.println("The CS Books are:");
+                bookUtils.csBooks();
+                System.out.println("The non English books are:");
+                bookUtils.foreignLanguageBook();
 
             } catch (Exception e) {
                 e.printStackTrace();
