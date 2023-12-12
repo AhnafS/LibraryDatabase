@@ -85,6 +85,9 @@ public class Main {
                 bookUtils.csBooks();
                 System.out.println("The non English books are:");
                 bookUtils.foreignLanguageBook();
+                System.out.println();
+               System.out.println("The CS Books are borrowd by:");
+               libraryTransactionUtils.whoBorrowedCSBooks();
 
             } catch (Exception e) {
                 e.printStackTrace();
