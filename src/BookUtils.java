@@ -105,7 +105,7 @@ public static void csBooks() {
                  String author = resultSet.getString("Author");
                  String title = resultSet.getString("Title");
                  String language= resultSet.getString("language");
-                 System.out.println("ISBN "+isbn +" Author: "+ author+" Title "+title+" Language "+ language);
+                 System.out.println("ISBN: "+isbn +" Author: "+ author+" Title: "+title+" Language: "+ language);
              }
          }
      } catch (SQLException e) {
@@ -125,7 +125,7 @@ public static void csBooks() {
                     String title = resultSet.getString("Title");
                     String language= resultSet.getString("language");
 
-                    System.out.print("ISBN " + isbn + ", Author " + author + ", Title " + title+ ", Language "+ language);
+                    System.out.print("ISBN: " + isbn + ", Author: " + author + ", Title: " + title+ ", Language: "+ language);
                 }
             }
         } catch (SQLException e) {
