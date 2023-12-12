@@ -48,6 +48,8 @@ public class Main {
             libraryCardUtils.deleteLibraryCard(11);
             System.out.println("\n");
             libraryCardUtils.getAllLibraryCards();
+            libraryCardUtils.disableExpiredLibraryCards();
+            libraryCardUtils.renewLibraryCard(2);
 
             // Library Transaction Method
             LibraryTransactionUtils libraryTransactionUtils = new LibraryTransactionUtils();
@@ -71,6 +73,12 @@ public class Main {
 
                 // Display all library transactions again (including updated outstanding
                 // balances)
+                libraryTransactionUtils.getAllLibraryTransactions();
+
+                LibraryTransactionUtils.returnBook("1234567890123", 1, 1);
+
+                // Display all library transactions after returning the book
+                System.out.println("\nAfter returning the book:");
                 libraryTransactionUtils.getAllLibraryTransactions();
 
             } catch (Exception e) {

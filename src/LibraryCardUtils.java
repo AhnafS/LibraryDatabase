@@ -3,6 +3,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LibraryCardUtils {
     private static final String DATABASE_URL = "jdbc:sqlite:src/db/LibraryDatabase.db";
@@ -72,6 +74,46 @@ public class LibraryCardUtils {
                 } else {
                     System.out.println("LibraryCard not found or deletion failed.");
                 }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void renewLibraryCard(int libraryID) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            // Renew the library card by adding one year to the expiration date
+            String sql = "UPDATE LibraryCard SET ExpireDate = DATE(ExpireDate, '+1 year') WHERE LibraryID = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setInt(1, libraryID);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Library card renewed successfully!");
+                } else {
+                    System.out.println("Library card renewal failed. Library ID not found.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void disableExpiredLibraryCards() {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            // Disable library cards that have expired by setting ExpireDate to null
+            Date currentDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedCurrentDate = sdf.format(currentDate);
+
+            String sql = "UPDATE LibraryCard SET ExpireDate = null WHERE ExpireDate < ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, formattedCurrentDate);
+
+                int rowsUpdated = preparedStatement.executeUpdate();
+
+                System.out.println(rowsUpdated + " expired library cards disabled.");
             }
         } catch (SQLException e) {
             e.printStackTrace();

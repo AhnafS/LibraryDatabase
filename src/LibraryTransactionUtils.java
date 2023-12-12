@@ -189,4 +189,29 @@ public class LibraryTransactionUtils {
         // Return 0.0 if an error occurs or no result is found
         return 0.0;
     }
+
+    public static void returnBook(String isbn, int copyNumber, int libraryID) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            // Prepare SQL statement for returning a book
+            String sql = "UPDATE LibraryTransaction SET ReturnDate = CURRENT_DATE " +
+                    "WHERE ISBN = ? AND CopyNumber = ? AND LibraryID = ? AND ReturnDate IS NULL";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                // Set parameters for the update
+                preparedStatement.setString(1, isbn);
+                preparedStatement.setInt(2, copyNumber);
+                preparedStatement.setInt(3, libraryID);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Book returned successfully!");
+                } else {
+                    System.out.println(
+                            "Book return failed. Make sure the book is checked out and the information is correct.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
