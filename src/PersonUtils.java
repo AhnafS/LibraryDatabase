@@ -73,19 +73,6 @@ public class PersonUtils {
             // Check if LibraryCard exists for the person
             boolean libraryCardExists = checkLibraryCardExists(connection, personID);
 
-            // Delete Person
-            String deletePersonSql = "DELETE FROM Person WHERE PersonID = ?";
-            try (PreparedStatement deletePersonStatement = connection.prepareStatement(deletePersonSql)) {
-                deletePersonStatement.setInt(1, personID);
-                int rowsAffectedPerson = deletePersonStatement.executeUpdate();
-
-                if (rowsAffectedPerson > 0) {
-                    System.out.println("Person deleted successfully!");
-                } else {
-                    System.out.println("Person not found or deletion failed.");
-                }
-            }
-
             // Delete LibraryCard if it exists
             if (libraryCardExists) {
                 String deleteLibraryCardSql = "DELETE FROM LibraryCard WHERE LibraryID = ?";
@@ -98,6 +85,19 @@ public class PersonUtils {
                     } else {
                         System.out.println("LibraryCard not found or deletion failed.");
                     }
+                }
+            }
+
+            // Delete Person
+            String deletePersonSql = "DELETE FROM Person WHERE PersonID = ?";
+            try (PreparedStatement deletePersonStatement = connection.prepareStatement(deletePersonSql)) {
+                deletePersonStatement.setInt(1, personID);
+                int rowsAffectedPerson = deletePersonStatement.executeUpdate();
+
+                if (rowsAffectedPerson > 0) {
+                    System.out.println("Person deleted successfully!");
+                } else {
+                    System.out.println("Person not found or deletion failed.");
                 }
             }
 
